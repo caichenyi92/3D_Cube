@@ -61,6 +61,10 @@ public class Slab implements Element {
         this.rand_pts_on = Cgeo.randomPtsOnMesh(pts_num, slab);
     }
 
+    public void setSlab(HE_Mesh slab) {
+        this.slab = slab;
+    }
+
     @Override
     public void saveToCsv(String path) throws IOException {
         CFile.savePtsToCsv("slab", path, rand_pts_on);
