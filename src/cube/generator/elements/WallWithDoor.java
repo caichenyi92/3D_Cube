@@ -9,7 +9,8 @@ import java.util.ArrayList;
 public class WallWithDoor implements Element{
 
     int pts_num;
-    ArrayList<WB_Point> rans_pts_on;
+    ArrayList<WB_Point> rand_pts_on;
+    ArrayList<WB_Point> rand_pts_inside;
 
     public WallWithDoor(int pts_num) {
         this.pts_num = pts_num;
