@@ -70,9 +70,7 @@ public class Cube implements Element {
         app.stroke(255,0,0);
         app.strokeWeight(1);
         render.drawEdges(cube);
-        for (WB_Point pt : rand_pts_on) {
-            render.drawPoint(pt, 2);
-        }
+        render.drawPoint(rand_pts_on);
         app.popStyle();
     }
 

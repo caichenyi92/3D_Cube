@@ -34,8 +34,8 @@ public class ZTest_Save extends PApplet {
 
         pts_num = 784;
         each_element_num = 200;
-        train_path = "D:\\eclipse-workspace\\3D_Cube\\src\\1116_translate_onmesh_train.csv";
-        test_path = "D:\\eclipse-workspace\\3D_Cube\\src\\1116_translate_onmesh_test.csv";
+        train_path = "D:\\eclipse-workspace\\3D_Cube\\src\\datasets\\1116_translate_onmesh_train.csv";
+        test_path = "D:\\eclipse-workspace\\3D_Cube\\src\\datasets\\1116_translate_onmesh_test.csv";
 
         getElements();
         System.out.println("saving points=========");
