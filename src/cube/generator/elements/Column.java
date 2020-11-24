@@ -23,7 +23,7 @@ public class Column implements Element {
     public Column(int pts_num) {
         this.pts_num = pts_num;
         setColumn();
-
+        setRand_pts_on();
     }
 
     public void setColumn() {

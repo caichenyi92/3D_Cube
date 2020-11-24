@@ -34,8 +34,6 @@ public class Cube implements Element {
         translateMesh();
     }
 
-
-
     public void rotateMesh(){
         Random rand = new Random();
         cube.rotateAboutAxisSelf(Math.random() * Math.PI, 0, 0, 0, rand.nextInt(2), rand.nextInt(2), rand.nextInt(2));
@@ -65,7 +63,6 @@ public class Cube implements Element {
     @Override
     public void display(WB_Render3D render) {
         PGraphicsOpenGL app = render.getHome();
-        System.out.println(rand_pts_on.size());
         app.pushStyle();
         app.stroke(255,0,0);
         app.strokeWeight(1);
