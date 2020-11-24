@@ -35,7 +35,7 @@ public class ZTest_Nsave extends PApplet {
         cam = new CameraController(this, 400);
 
         pts_num = 784;
-        each_element_num = 3;
+        each_element_num = 50;
         getElements();
         System.out.println("drawing=========");
     }
@@ -44,22 +44,18 @@ public class ZTest_Nsave extends PApplet {
         elements = new ArrayList<>();
         int count = 0;
         while (count < each_element_num) {
-//            cube = new Cube(pts_num);
-//            solidwall = new SolidWall(pts_num);
-//            slab = new Slab(pts_num);
-//            wallww = new WallWithWindow(pts_num);
-//            column = new Column(pts_num);
+            cube = new Cube(pts_num);
+            solidwall = new SolidWall(pts_num);
+            slab = new Slab(pts_num);
+            wallww = new WallWithWindow(pts_num);
+            column = new Column(pts_num);
             wallwd = new WallWithDoor(pts_num);
-//            elements.add(cube);
-//            elements.add(solidwall);
-//            elements.add(slab);
-//            elements.add(wallww);
-//            elements.add(column);
+            elements.add(cube);
+            elements.add(solidwall);
+            elements.add(slab);
+            elements.add(wallww);
+            elements.add(column);
             elements.add(wallwd);
-            // capsule = new Capsule(pts_num);
-//            cylinder = new Cylinder(pts_num);
-//            elements.add(capsule);
-//            elements.add(cylinder);
             count++;
             System.out.println(elements.size());
         }

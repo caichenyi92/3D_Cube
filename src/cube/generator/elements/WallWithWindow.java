@@ -35,10 +35,10 @@ public class WallWithWindow implements Element {
     public void setWallWithWindow() {
         setBase();
         double thick = 5 + Math.random() * 25;
-        ArrayList<WB_Polygon> polys = Cgeo.extrudeBaseWithOneHole(base,new WB_Vector(0,0,1),thick);
+        ArrayList<WB_Polygon> polys = Cgeo.extrudeBaseWithOneHole(base, new WB_Vector(0, 0, 1), thick);
         HEC_FromPolygons creator = new HEC_FromPolygons(polys);
         wallwithwindow = creator.create();
-        wallwithwindow.rotateAboutAxisSelf(Math.PI/2,new WB_Point(0,0,0),new WB_Vector(1,0,0));
+        wallwithwindow.rotateAboutAxisSelf(Math.PI / 2, new WB_Point(0, 0, 0), new WB_Vector(1, 0, 0));
         translateMesh();
     }
 
@@ -84,7 +84,8 @@ public class WallWithWindow implements Element {
     }
 
     public void setRand_pts_on() {
-        this.rand_pts_on = Cgeo.randomPtsOnMesh(pts_num, wallwithwindow);
+        this.rand_pts_on = Cgeo.randomPtsOnTriangles(pts_num, wallwithwindow);
+//        this.rand_pts_on = Cgeo.randomPtsOnMesh(pts_num, wallwithwindow);
     }
 
 
@@ -99,7 +100,7 @@ public class WallWithWindow implements Element {
         app.pushStyle();
         app.stroke(100, 0, 255);
         render.drawEdges(wallwithwindow);
-        render.drawPoint(rand_pts_on, 2);
+        render.drawPoint(rand_pts_on, 1);
         app.popStyle();
 
     }

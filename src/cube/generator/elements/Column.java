@@ -55,7 +55,8 @@ public class Column implements Element {
     }
 
     public void setRand_pts_on() {
-        rand_pts_on = Cgeo.randomPtsOnMesh(pts_num, column);
+        rand_pts_on = Cgeo.randomPtsOnTriangles(pts_num,column);
+//        rand_pts_on = Cgeo.randomPtsOnMesh(pts_num, column);
     }
 
     @Override

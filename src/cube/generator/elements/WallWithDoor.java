@@ -4,11 +4,8 @@ import javafx.beans.binding.DoubleExpression;
 import nct.CFile;
 import nct.Cgeo;
 import processing.opengl.PGraphicsOpenGL;
-import wblut.geom.WB_Point;
-import wblut.geom.WB_Polygon;
-import wblut.geom.WB_Vector;
-import wblut.hemesh.HEC_FromPolygons;
-import wblut.hemesh.HE_Mesh;
+import wblut.geom.*;
+import wblut.hemesh.*;
 import wblut.processing.WB_Render3D;
 
 import java.io.IOException;
@@ -25,8 +22,8 @@ public class WallWithDoor implements Element {
     public WallWithDoor(int pts_num) {
         this.pts_num = pts_num;
         setWallwithdoor();
-//        setRand_pts_on();
-        setRand_pts_inside();
+        setRand_pts_on();
+//        setRand_pts_inside();
     }
 
     public void setWallwithdoor() {
@@ -39,9 +36,7 @@ public class WallWithDoor implements Element {
         WB_Point p7 = new WB_Point(0, 0, h);
 
         double d_hei = h / 2 + Math.random() * h / 6;
-        System.out.println("d_hei : " + d_hei);
         double d_wid = d_hei / 2;
-        System.out.println("d_wid : " + d_wid);
 
         if (d_wid > w) {
             d_wid = 0.8 * w;
@@ -71,7 +66,8 @@ public class WallWithDoor implements Element {
     }
 
     public void setRand_pts_on() {
-        rand_pts_on = Cgeo.randomPtsOnMesh(pts_num, wallwithdoor);
+        rand_pts_on = Cgeo.randomPtsOnTriangles(pts_num,wallwithdoor);
+//        rand_pts_on = Cgeo.randomPtsOnMesh(pts_num, wallwithdoor);
     }
 
     void setRand_pts_inside(){
@@ -90,7 +86,7 @@ public class WallWithDoor implements Element {
         app.pushStyle();
         app.stroke(0, 100, 100);
         render.drawEdges(wallwithdoor);
-        render.drawPoint(rand_pts_inside, 2);
+        render.drawPoint(rand_pts_on, 2);
         app.popStyle();
     }
 

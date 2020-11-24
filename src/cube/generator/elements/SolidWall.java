@@ -59,7 +59,8 @@ public class SolidWall implements Element {
     }
 
     public void setRand_pts_on() {
-        this.rand_pts_on = Cgeo.randomPtsOnMesh(pts_num,solidwall);
+        this.rand_pts_on = Cgeo.randomPtsOnTriangles(pts_num,solidwall);
+//        this.rand_pts_on = Cgeo.randomPtsOnMesh(pts_num,solidwall);
     }
 
     @Override

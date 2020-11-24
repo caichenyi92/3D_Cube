@@ -11,11 +11,11 @@ import java.util.List;
 
 public class ZTest_Save extends PApplet {
     Element cube;
-    Element capsule;
-    Element cylinder;
     Element solidwall;
     Element slab;
     Element wallww;
+    Element column;
+    Element wallwd;
     List<Element> elements;
 
     String train_path;
@@ -32,16 +32,16 @@ public class ZTest_Save extends PApplet {
         render = new WB_Render3D(this);
         cam = new CameraController(this,400);
 
-        pts_num = 784;
-        each_element_num = 200;
-        train_path = "D:\\eclipse-workspace\\3D_Cube\\src\\datasets\\1116_translate_onmesh_train.csv";
-        test_path = "D:\\eclipse-workspace\\3D_Cube\\src\\datasets\\1116_translate_onmesh_test.csv";
+        pts_num = 1568;
+        each_element_num = 100;
+        train_path = "D:\\eclipse-workspace\\3D_Cube\\src\\datasets\\1124_translate_onmesh_train.csv";
+        test_path = "D:\\eclipse-workspace\\3D_Cube\\src\\datasets\\1124_translate_onmesh_test.csv";
 
         getElements();
         System.out.println("saving points=========");
         for(Element e:elements){
             try {
-                e.saveToCsv(train_path);
+                e.saveToCsv(test_path);
             } catch (IOException ioException) {
                 ioException.printStackTrace();
             }
@@ -54,21 +54,22 @@ public class ZTest_Save extends PApplet {
         elements = new ArrayList<>();
         int count = 0;
         while (count < each_element_num) {
-//            cube = new Cube(pts_num);
-//            capsule = new Capsule(pts_num);
-//            cylinder = new Cylinder(pts_num);
-//            solidwall = new SolidWall(pts_num);
-//            slab = new Slab(pts_num);
+            cube = new Cube(pts_num);
+            solidwall = new SolidWall(pts_num);
+            slab = new Slab(pts_num);
             wallww = new WallWithWindow(pts_num);
-//            elements.add(cube);
-//            elements.add(capsule);
-//            elements.add(cylinder);
-//            elements.add(solidwall);
-//            elements.add(slab);
+            column = new Column(pts_num);
+            wallwd = new WallWithDoor(pts_num);
+
+            elements.add(cube);
+            elements.add(solidwall);
+            elements.add(slab);
             elements.add(wallww);
+            elements.add(column);
+            elements.add(wallwd);
             count++;
-            System.out.println(elements.size());
         }
+        System.out.println(elements.size());
     }
 
     public void draw() {
