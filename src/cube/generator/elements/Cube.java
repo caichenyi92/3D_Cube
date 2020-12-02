@@ -48,8 +48,8 @@ public class Cube implements Element {
     }
 
     public void setRand_pts_on() {
-        rand_pts_on = Cgeo.randomPtsOnTriangles(pts_num,cube);
-//        rand_pts_on = Cgeo.randomPtsOnMesh(pts_num,cube);
+//        rand_pts_on = Cgeo.randomPtsOnTriangles(pts_num,cube);
+        rand_pts_on = Cgeo.randomPtsOnMesh(pts_num,cube);
     }
 
     public HE_Mesh getCube() {

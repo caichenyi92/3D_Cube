@@ -32,16 +32,16 @@ public class ZTest_Save extends PApplet {
         render = new WB_Render3D(this);
         cam = new CameraController(this,400);
 
-        pts_num = 1568;
-        each_element_num = 100;
-        train_path = "D:\\eclipse-workspace\\3D_Cube\\src\\datasets\\1124_translate_onmesh_train.csv";
-        test_path = "D:\\eclipse-workspace\\3D_Cube\\src\\datasets\\1124_translate_onmesh_test.csv";
+        pts_num = 784;
+        each_element_num = 1000;
+        train_path = "D:\\eclipse-workspace\\3D_Cube\\src\\datasets\\1125_translate_onmesh_train_sw.csv";
+        test_path = "D:\\eclipse-workspace\\3D_Cube\\src\\datasets\\1125_translate_onmesh_test_sw.csv";
 
         getElements();
         System.out.println("saving points=========");
         for(Element e:elements){
             try {
-                e.saveToCsv(test_path);
+                e.saveToCsv(train_path);
             } catch (IOException ioException) {
                 ioException.printStackTrace();
             }
@@ -54,19 +54,19 @@ public class ZTest_Save extends PApplet {
         elements = new ArrayList<>();
         int count = 0;
         while (count < each_element_num) {
-            cube = new Cube(pts_num);
+//            cube = new Cube(pts_num);
             solidwall = new SolidWall(pts_num);
             slab = new Slab(pts_num);
-            wallww = new WallWithWindow(pts_num);
-            column = new Column(pts_num);
-            wallwd = new WallWithDoor(pts_num);
+//            wallww = new WallWithWindow(pts_num);
+//            column = new Column(pts_num);
+//            wallwd = new WallWithDoor(pts_num);
 
-            elements.add(cube);
+//            elements.add(cube);
             elements.add(solidwall);
             elements.add(slab);
-            elements.add(wallww);
-            elements.add(column);
-            elements.add(wallwd);
+//            elements.add(wallww);
+//            elements.add(column);
+//            elements.add(wallwd);
             count++;
         }
         System.out.println(elements.size());

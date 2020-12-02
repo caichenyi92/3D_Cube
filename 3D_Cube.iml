@@ -7,9 +7,10 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="processing2.2" level="application" />
-    <orderEntry type="library" name="HEMesh2019" level="application" />
-    <orderEntry type="module" module-name="GzfCamera" />
+    <orderEntry type="library" name="JTS" level="application" />
     <orderEntry type="module" module-name="Tools" />
+    <orderEntry type="module" module-name="GzfCamera" />
+    <orderEntry type="library" name="HEMesh2019" level="application" />
+    <orderEntry type="library" name="processing2.2" level="application" />
   </component>
 </module>

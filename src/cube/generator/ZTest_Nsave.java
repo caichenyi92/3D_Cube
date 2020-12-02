@@ -35,7 +35,7 @@ public class ZTest_Nsave extends PApplet {
         cam = new CameraController(this, 400);
 
         pts_num = 784;
-        each_element_num = 50;
+        each_element_num = 1;
         getElements();
         System.out.println("drawing=========");
     }

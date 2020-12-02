@@ -58,8 +58,8 @@ public class Slab implements Element {
     }
 
     public void setRand_pts_on() {
-//        this.rand_pts_on = Cgeo.randomPtsOnMesh(pts_num, slab);
-        this.rand_pts_on = Cgeo.randomPtsOnTriangles(pts_num,slab);
+        this.rand_pts_on = Cgeo.randomPtsOnMesh(pts_num, slab);
+//        this.rand_pts_on = Cgeo.randomPtsOnTriangles(pts_num,slab);
     }
 
 

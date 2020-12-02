@@ -66,8 +66,8 @@ public class WallWithDoor implements Element {
     }
 
     public void setRand_pts_on() {
-        rand_pts_on = Cgeo.randomPtsOnTriangles(pts_num,wallwithdoor);
-//        rand_pts_on = Cgeo.randomPtsOnMesh(pts_num, wallwithdoor);
+//        rand_pts_on = Cgeo.randomPtsOnTriangles(pts_num,wallwithdoor);
+        rand_pts_on = Cgeo.randomPtsOnMesh(pts_num, wallwithdoor);
     }
 
     void setRand_pts_inside(){

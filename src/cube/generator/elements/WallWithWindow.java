@@ -84,8 +84,8 @@ public class WallWithWindow implements Element {
     }
 
     public void setRand_pts_on() {
-        this.rand_pts_on = Cgeo.randomPtsOnTriangles(pts_num, wallwithwindow);
-//        this.rand_pts_on = Cgeo.randomPtsOnMesh(pts_num, wallwithwindow);
+//        this.rand_pts_on = Cgeo.randomPtsOnTriangles(pts_num, wallwithwindow);
+        this.rand_pts_on = Cgeo.randomPtsOnMesh(pts_num, wallwithwindow);
     }
 
 
