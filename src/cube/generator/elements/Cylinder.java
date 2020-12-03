@@ -68,4 +68,5 @@ public class Cylinder implements Element {
         render.drawPoint(rand_pts_inside, 2);
         app.popStyle();
     }
+
 }
