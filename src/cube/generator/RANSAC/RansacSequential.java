@@ -19,7 +19,7 @@ import java.util.Random;
 public class RansacSequential extends Ransac {
     @Override
     public Line2 computeRansac(ArrayList<Point> points) {
-        return ransac(points, points.size());
+        return ransac(points, points.size()*10);
     }
 
     /**
@@ -32,11 +32,14 @@ public class RansacSequential extends Ransac {
         int size = 1000;
 
         for (int i = 0; i < 200; i++) {
-            points.add(new Point(random.nextInt(size), random.nextInt(size)));
+            points.add(new Point(random.nextInt(size), 300));
         }
-        for (int i = 0; i < 1000; i++) {
-            points.add(new Point(random.nextInt(size), 500));
+        for (int i = 0; i < 200; i++) {
+            points.add(new Point(random.nextInt(size), 400));
         }
+//        for (int i = 0; i < 1000; i++) {
+//            points.add(new Point(random.nextInt(size), random.nextInt(size)));
+//        }
         Line2 line = new RansacSequential().computeRansac(points);
 
         Drawer drawer = new Drawer(size, size);
@@ -44,4 +47,5 @@ public class RansacSequential extends Ransac {
         drawer.setPoints(points);
         drawer.setVisible(true);
     }
+
 }

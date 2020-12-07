@@ -23,6 +23,9 @@ public class SolidWall implements Element {
 
     public SolidWall(int pts_num) {
         this.pts_num = pts_num;
+        this.rand_pts_on = new ArrayList<>();
+        this.rand_pts_inside = new ArrayList<>();
+        solidwall = new HE_Mesh();
         setSolidwall();
 //        setRand_pts_inside();
         setRand_pts_on();
@@ -37,7 +40,7 @@ public class SolidWall implements Element {
         WB_Point p2 = new WB_Point(w, 0, h);
         WB_Point p3 = new WB_Point(0, 0, h);
         WB_Polygon wallface = new WB_Polygon(p0, p1, p2, p3);
-        ArrayList<WB_Polygon> faces = Cgeo.extrudeBase(wallface,new WB_Vector(0,1,0),thick);
+        ArrayList<WB_Polygon> faces = Cgeo.extrudeBase(wallface, new WB_Vector(0, 1, 0), thick);
         HEC_FromPolygons creator = new HEC_FromPolygons(faces);
         solidwall = creator.create();
         translateMesh();
@@ -45,34 +48,40 @@ public class SolidWall implements Element {
 
     }
 
-    void translateMesh(){
-        Cgeo.translateMesh3D(solidwall,500);
+    void translateMesh() {
+        Cgeo.translateMesh3D(solidwall, 500);
     }
 
-    void rotateMesh(){
+    void rotateMesh() {
         Random rand = new Random();
         solidwall.rotateAboutAxisSelf(Math.random() * Math.PI, 0, 0, 0, rand.nextInt(2), rand.nextInt(2), rand.nextInt(2));
     }
 
     public void setRand_pts_inside() {
-        this.rand_pts_inside = Cgeo.randomPtsInMesh(pts_num,solidwall);
+        this.rand_pts_inside = Cgeo.randomPtsInMesh(pts_num, solidwall);
     }
 
     public void setRand_pts_on() {
-//        this.rand_pts_on = Cgeo.randomPtsOnTriangles(pts_num,solidwall);
-        this.rand_pts_on = Cgeo.randomPtsOnMesh(pts_num,solidwall);
+        //均匀分布的点
+        this.rand_pts_on = Cgeo.randomPtsOnTriangles(pts_num,solidwall);
+        // subdivide的点
+//        this.rand_pts_on = Cgeo.randomPtsOnMesh(pts_num, solidwall);
+    }
+
+    public ArrayList<WB_Point> getRand_pts_on() {
+        return this.rand_pts_on;
     }
 
     @Override
     public void saveToCsv(String path) throws IOException {
-        CFile.savePtsToCsv("solidwall",path,rand_pts_on);
+        CFile.savePtsToCsv("solidwall", path, rand_pts_on);
     }
 
     @Override
     public void display(WB_Render3D render) {
         PGraphicsOpenGL app = render.getHome();
         app.pushStyle();
-        app.stroke(255,100,0);
+        app.stroke(255, 100, 0);
         render.drawEdges(solidwall);
         render.drawPoint(rand_pts_on, 2);
         app.popStyle();

@@ -1,19 +1,14 @@
 package cube.generator.elements;
 
 import nct.CFile;
-import nct.CMath;
 import nct.Cgeo;
 import processing.opengl.PGraphicsOpenGL;
-import wblut.geom.WB_GeometryFactory2D;
-import wblut.geom.WB_Point;
-import wblut.geom.WB_Polygon;
-import wblut.geom.WB_Vector;
+import wblut.geom.*;
 import wblut.hemesh.HEC_FromPolygons;
 import wblut.hemesh.HE_Mesh;
 import wblut.processing.WB_Render3D;
 
 import java.io.IOException;
-import java.net.CookieHandler;
 import java.util.*;
 
 public class WallWithWindow implements Element {
@@ -23,6 +18,8 @@ public class WallWithWindow implements Element {
     HE_Mesh wallwithwindow;
     WB_GeometryFactory2D gf;
     WB_Polygon base;
+    float minZ;
+    float minX;
 
     public WallWithWindow(int pts_num) {
         this.pts_num = pts_num;
@@ -39,13 +36,14 @@ public class WallWithWindow implements Element {
         HEC_FromPolygons creator = new HEC_FromPolygons(polys);
         wallwithwindow = creator.create();
         wallwithwindow.rotateAboutAxisSelf(Math.PI / 2, new WB_Point(0, 0, 0), new WB_Vector(1, 0, 0));
-        translateMesh();
+//        translateMesh();
+//        rotateMesh();
     }
 
     public void setBase() {
         ArrayList<WB_Point> innerpts = new ArrayList<>();
-        double w = 10 + Math.random() * 50;
-        double h = 10 + Math.random() * 50;
+        double w = 40 + Math.random() * 20;
+        double h = 40 + Math.random() * 20;
         double buf_dis = 5 + Math.random() * 5;
         innerpts.add(new WB_Point(0, 0, 0));
         innerpts.add(new WB_Point(w, 0, 0));
@@ -57,7 +55,7 @@ public class WallWithWindow implements Element {
         System.out.println(sspoly.size());
         List<WB_Polygon> shellpoly;
         WB_Polygon shellobb = new WB_Polygon();
-        double buf_dis2 = 20 + Math.random() * 50;
+        double buf_dis2 = 20 + Math.random() * 30;
         for (WB_Polygon shell : sspoly) {
             shellpoly = gf.createBufferedPolygons2D(shell, buf_dis2);
             System.out.println(shellpoly.size());
@@ -68,6 +66,16 @@ public class WallWithWindow implements Element {
         Collections.reverse(innerpts);
         base = new WB_Polygon(shellobb.getPoints().toList(), innerpts);
 
+        List<WB_Coord> shellpts = shellobb.getPoints().toList();
+        minZ = shellpts.get(0).zf();
+        minX = shellpts.get(0).xf();
+        for(WB_Coord pt:shellpts){
+            if(pt.zf()<minZ)
+                minZ = pt.zf();
+            if(pt.xf()<minX)
+                minX = pt.xf();
+        }
+
     }
 
     void translateMesh() {
@@ -76,7 +84,7 @@ public class WallWithWindow implements Element {
 
     void rotateMesh() {
         Random rand = new Random();
-        wallwithwindow.rotateAboutAxisSelf(Math.random() * Math.PI, 0, 0, 0, rand.nextInt(2), rand.nextInt(2), rand.nextInt(2));
+        wallwithwindow.rotateAboutAxisSelf(Math.random() * Math.PI, 0, 0, 0, 0, 0, 1);
     }
 
     public void setRand_pts_inside() {
@@ -84,10 +92,21 @@ public class WallWithWindow implements Element {
     }
 
     public void setRand_pts_on() {
-//        this.rand_pts_on = Cgeo.randomPtsOnTriangles(pts_num, wallwithwindow);
-        this.rand_pts_on = Cgeo.randomPtsOnMesh(pts_num, wallwithwindow);
+        this.rand_pts_on = Cgeo.randomPtsOnTriangles(pts_num, wallwithwindow);
+//        this.rand_pts_on = Cgeo.randomPtsOnMesh(pts_num, wallwithwindow);
     }
 
+    public ArrayList<WB_Point> getRan_pts_on(){
+        return this.rand_pts_on;
+    }
+
+    public float getMinZ() {
+        return minZ;
+    }
+
+    public float getMinX() {
+        return minX;
+    }
 
     @Override
     public void saveToCsv(String path) throws IOException {

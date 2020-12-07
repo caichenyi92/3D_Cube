@@ -1,8 +1,10 @@
 package cube.generator;
 
 import cube.generator.elements.*;
+import cube.generator.parameterize.Filter;
 import gzf.gui.CameraController;
 import processing.core.PApplet;
+import wblut.geom.WB_Segment;
 import wblut.processing.WB_Render3D;
 
 import java.util.ArrayList;
@@ -29,6 +31,7 @@ public class ZTest01 extends PApplet {
 //        cam.top();
         render = new WB_Render3D(this);
         getElements();
+
     }
 
     public void getElements() {
