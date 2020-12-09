@@ -96,6 +96,10 @@ public class WallWithWindow implements Element {
 //        this.rand_pts_on = Cgeo.randomPtsOnMesh(pts_num, wallwithwindow);
     }
 
+    public HE_Mesh getWallwithwindow() {
+        return wallwithwindow;
+    }
+
     public ArrayList<WB_Point> getRan_pts_on(){
         return this.rand_pts_on;
     }
@@ -123,4 +127,5 @@ public class WallWithWindow implements Element {
         app.popStyle();
 
     }
+
 }

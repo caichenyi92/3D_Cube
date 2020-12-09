@@ -10,19 +10,26 @@ import java.util.ArrayList;
 public class GeoLines {
 
     Filter filter;
-    Filter[] mostptfiltersXY;
-    Filter[] mostptfiltersYZ;
+
+    ArrayList<Filter> mostptfiltersXY;
+    ArrayList<Filter> mostptfiltersYZ;
     ArrayList<ArrayList<WB_Point>> ptsinselectfils;
 
     ArrayList<WB_Point> pts_on_ele;
 
+    //projection on XY plane
     ArrayList<WB_Point> ptsprojection;
+    //projection on YZ plane
     ArrayList<WB_Point> ptsprojectionX;
+
+    // 目前不支持绕z轴旋转的点云
+    WB_AABB baseAABB;
 
     public WB_Line mainlineXY;
     public WB_Line mainlineYZ;
     public ArrayList<WB_Line> sublinesX;
     public ArrayList<WB_Line> sublinesY;
+    public double thick;
 
     float filter_step;
 
@@ -36,11 +43,12 @@ public class GeoLines {
 
         setMainLineXY();
         setMainLineYZ();
-        setFilter();
         setMostptFiltersXY();
         setMostptfiltersYZ();
         setSublinesX();
         setSublinesY();
+        setBaseAABB();
+        setThick();
     }
 
     public void setMainLineXY() {
@@ -72,14 +80,14 @@ public class GeoLines {
         }
     }
 
+    // 外头用arrayList 接住的时候  注意引用的话 都会改变 注意外头引用时 大小都会随着改变！！！
     public ArrayList<WB_Line> getSublinesX() {
         return sublinesX;
     }
 
-
     public void setMainLineYZ() {
         WB_Transform3D T = new WB_Transform3D();
-        T.addRotateAboutAxis(Math.PI/2,WB_Point.ZERO(),WB_Point.Y());
+        T.addRotateAboutAxis(Math.PI / 2, WB_Point.ZERO(), WB_Point.Y());
         ArrayList<WB_Point> ptsprojX_trans = ptsTrans(ptsprojectionX, T);
         mainlineYZ = leastSquareLine(ptsprojX_trans);
         System.out.println("main Line YZ : " + mainlineYZ.getDirection());
@@ -94,40 +102,39 @@ public class GeoLines {
 
 
     public void setMostptFiltersXY() {
-        int startx = (int) MinX(ptsprojection) - 5;
-        mostptfiltersXY = mostPtFilters(4, ptsprojection, mainlineXY,startx);
+        int startx = (int) CMath.MinX(ptsprojection) - 5;
+        mostptfiltersXY = mostPtFilters(4, ptsprojection, mainlineXY, startx);
     }
 
-    public Filter[] getMostptfiltersXY() {
+    public ArrayList<Filter> getMostptfiltersXY() {
         return mostptfiltersXY;
     }
 
     public void setMostptfiltersYZ() {
 //        WB_Transform3D T = new WB_Transform3D(WB_Point.ZERO(), WB_Point.X(), WB_Point.ZERO(), new WB_Point(0,0,1));
         WB_Transform3D T = new WB_Transform3D();
-        T.addRotateAboutAxis(Math.PI/2,WB_Point.ZERO(),WB_Point.Y());
+        T.addRotateAboutAxis(Math.PI / 2, WB_Point.ZERO(), WB_Point.Y());
         ArrayList<WB_Point> ptsprojX_trans = ptsTrans(ptsprojectionX, T);
         WB_AABB aabb = new WB_AABB(ptsprojX_trans);
         WB_Polygon a = new WB_Polygon(aabb.getCorners());
         System.out.println(" AABB norm vec : " + a.getNormal());
-        int startx = (int) MinX(ptsprojX_trans) - 5;
+        int startx = (int) CMath.MinX(ptsprojX_trans) - 5;
         WB_Line transYZ = mainlineYZ.apply(T);
         int filnum = 4;
-        Filter[] fil_tmp ;
-        fil_tmp = mostPtFilters(filnum, ptsprojX_trans, transYZ,startx); // fil_tmp
+        ArrayList<Filter> fil_tmp;
+        fil_tmp = mostPtFilters(filnum, ptsprojX_trans, transYZ, startx); // fil_tmp
         T.inverse();
 
-        mostptfiltersYZ = new Filter[filnum];
-        for(int i = 0;i<filnum;i++){
-            System.out.println("fil_tmp" + i + "scope : " + fil_tmp[i].scope);
-            System.out.println("fil_tmp" + i + "dir: "+ fil_tmp[i].dir );
-            mostptfiltersYZ[i] = new Filter(fil_tmp[i].origin.apply(T),fil_tmp[i].dir.apply(T),fil_tmp[i].scope,fil_tmp[i].step,new WB_Vector(1,0,0));
+        mostptfiltersYZ = new ArrayList<>();
+        for (int i = 0; i < filnum; i++) {
+            System.out.println("fil_tmp" + i + "scope : " + fil_tmp.get(i).scope);
+            System.out.println("fil_tmp" + i + "dir: " + fil_tmp.get(i).dir);
+            mostptfiltersYZ.add(new Filter(fil_tmp.get(i).origin.apply(T), fil_tmp.get(i).dir.apply(T), fil_tmp.get(i).scope, fil_tmp.get(i).step, new WB_Vector(1, 0, 0)));
         }
 
     }
 
-
-    public Filter[] getMostptfiltersYZ() {
+    public ArrayList<Filter> getMostptfiltersYZ() {
         return mostptfiltersYZ;
     }
 
@@ -154,18 +161,10 @@ public class GeoLines {
         return ptsprojectionX;
     }
 
-    public void setFilter() {
-//        filter = new Filter(new WB_Point(0, 0, projZ(pts_on_ele)), (WB_Vector) mainlineXY.getDirection(), 100, 20);
-    }
-
-    public Filter getFilter() {
-        return filter;
-    }
-
     // filter划过后点数最多的前 num 名 , 在 2D 平面上
-    private Filter[] mostPtFilters(int num, ArrayList<WB_Point> pts, WB_Line mainl, int start) {
+    private ArrayList<Filter> mostPtFilters(int num, ArrayList<WB_Point> pts, WB_Line mainl, int start) {
         filter_step = 0.5f;
-        Filter[] areas = new Filter[num];
+        ArrayList<Filter> areas = new ArrayList<>();
         int totalfilternum = 500;
 
         Filter[] allfilters = new Filter[totalfilternum];
@@ -173,7 +172,7 @@ public class GeoLines {
         int[] ptsnumcontainfil = new int[totalfilternum];
 
         for (int i = 0; i < totalfilternum; i++) {
-            Filter f = new Filter(new WB_Point(filter_step * i + start, 0, projZ(pts)), (WB_Vector) mainl.getDirection(), 100, filter_step,new WB_Vector(0,0,1));
+            Filter f = new Filter(new WB_Point(filter_step * i + start, 0, Cgeo.projZ(pts)), (WB_Vector) mainl.getDirection(), 100, filter_step, new WB_Vector(0, 0, 1));
             allfilters[i] = f;
             ArrayList<WB_Point> ptsin = Cgeo.ptsInPolygon(f.filterbase, pts);
             ptsinfilters.add(ptsin);
@@ -186,10 +185,29 @@ public class GeoLines {
             indexofmaxes[i] = CMath.printArray(ptsnumcontainfil, maxinptsnum[i]);
         }
         for (int i = 0; i < num; i++) {
-            areas[i] = allfilters[indexofmaxes[i]];
-            System.out.println("num of pts in select filters : "+ ptsinfilters.get(indexofmaxes[i]).size());
+            areas.add(allfilters[indexofmaxes[i]]);
+            System.out.println("num of pts in select filters : " + ptsinfilters.get(indexofmaxes[i]).size());
         }
         return areas;
+    }
+
+
+    public void setBaseAABB() {
+        baseAABB = new WB_AABB(ptsprojection);
+
+    }
+
+    public WB_AABB getBaseAABB() {
+        return baseAABB;
+    }
+
+    public void setThick() {
+        this.thick = baseAABB.getMaxY()-baseAABB.getMinY();
+        System.out.println(" thickness : " + thick);
+    }
+
+    public double getThick() {
+        return thick;
     }
 
     public WB_Line leastSquareLine(ArrayList<WB_Point> pts) {
@@ -200,52 +218,14 @@ public class GeoLines {
         float y1 = x1 * a + b;
         float x2 = 1000;
         float y2 = x2 * a + b;
-        l = new WB_Line(x1, y1, projZ(pts), x2, y2, 0);
+        l = new WB_Line(x1, y1, Cgeo.projZ(pts), x2, y2, 0);
         return l;
-
-    }
-
-    public float MinX(ArrayList<WB_Point> pts) {
-        float minx = pts.get(0).xf();
-        for (WB_Point pt : pts) {
-            if (pt.xf() < minx)
-                minx = pt.xf();
-        }
-        return minx;
-    }
-
-    public float MinY(ArrayList<WB_Point> pts) {
-        float miny = pts.get(0).yf();
-        for (WB_Point pt : pts) {
-            if (pt.yf() < miny)
-                miny = pt.yf();
-        }
-        return miny;
-    }
-
-
-    public float projZ(ArrayList<WB_Point> pts) {
-        float z = pts.get(0).zf();
-        for (WB_Point pt : pts) {
-            if (pt.zf() < z)
-                z = pt.zf();
-        }
-        return z;
-    }
-
-    public float projX(ArrayList<WB_Point> pts) {
-        float x = pts.get(0).xf();
-        for (WB_Point pt : pts) {
-            if (pt.xf() < x)
-                x = pt.xf();
-        }
-        return x;
     }
 
     public ArrayList<WB_Point> ptsProjection(ArrayList<WB_Point> pts) {
         ArrayList<WB_Point> ptsproj = new ArrayList<>();
         for (WB_Point pt : pts) {
-            WB_Point pproj = new WB_Point(pt.xf(), pt.yf(), projZ(pts));
+            WB_Point pproj = new WB_Point(pt.xf(), pt.yf(), Cgeo.projZ(pts));
             ptsproj.add(pproj);
         }
         return ptsproj;
@@ -254,7 +234,7 @@ public class GeoLines {
     public ArrayList<WB_Point> getPtsprojectionX(ArrayList<WB_Point> pts) {
         ArrayList<WB_Point> ptsProjX = new ArrayList<>();
         for (WB_Point pt : pts) {
-            WB_Point pproj = new WB_Point(projX(pts), pt.yf(), pt.zf());
+            WB_Point pproj = new WB_Point(Cgeo.projX(pts), pt.yf(), pt.zf());
             ptsProjX.add(pproj);
         }
         return ptsProjX;

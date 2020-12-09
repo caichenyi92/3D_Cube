@@ -22,7 +22,8 @@ public class Test_Lines extends PApplet {
     GeoLines ls;
     WB_Line l;
     WB_Line l1;
-    ArrayList<WB_Line> subls;
+    ArrayList<WB_Line> sublsX;
+    ArrayList<WB_Line> sublsY;
 
     GeoReconstructor gr;
 
@@ -45,24 +46,26 @@ public class Test_Lines extends PApplet {
         ls = new GeoLines(pts_on_www);
         l = ls.getMainlineXY();
         l1 = ls.getMainlineYZ();
-        subls = new ArrayList<>();
-        subls= ls.getSublinesX();
-        subls.addAll(ls.getSublinesY());
-        System.out.println("subls size: " + subls.size());
+        sublsX = new ArrayList<>();
+        sublsX= ls.getSublinesX();
+        System.out.println("subls X size : " + sublsX.size());
+
+        sublsY = new ArrayList<>();
+        sublsY = ls.getSublinesY();
+        System.out.println("sublsY size: " + sublsY.size());
 
         filtersX = new ArrayList<>();
         for(int i = 0;i<4;i++){
-            filtersX.add(ls.getMostptfiltersXY()[i].getFilterbase());
+            filtersX.add(ls.getMostptfiltersXY().get(i).getFilterbase());
         }
         filtersY = new ArrayList<>();
         for(int i = 0; i<4;i++){
-            filtersY.add(ls.getMostptfiltersYZ()[i].getFilterbase());
+            filtersY.add(ls.getMostptfiltersYZ().get(i).getFilterbase());
         }
         WB_Transform3D T = new WB_Transform3D(WB_Point.ZERO(), WB_Point.X(), WB_Point.ZERO(), new WB_Point(0,0,1));
         //WB_Transform3D T = new WB_Transform3D();
        // T.addRotateAboutAxis(Math.PI/2,WB_Point.ZERO(),WB_Point.Y());
         ptsprojX_trans = GeoLines.ptsTrans(ls.getPtsprojectionX(),T);
-
         gr = new GeoReconstructor(ls);
     }
 
@@ -83,23 +86,32 @@ public class Test_Lines extends PApplet {
         popStyle();
 
         pushStyle();
-        stroke(100,255,0);
+        stroke(0,100,255);
 //        render.drawPolygonEdges(filtersX);
 //        render.drawPolygonEdges(filtersY);
-        for(WB_Line l:subls){
+        for(WB_Line l:sublsX)
             render.drawLine(l,200);
-        }
+        for(WB_Line l:sublsY)
+            render.drawLine(l,200);
+//        render.drawPolygonEdges(new WB_Polygon(ls.getBaseAABB().getCorners()));
+        popStyle();
+
+        pushStyle();
+        stroke(100,0,255);
+        render.drawPoint(gr.getPtsX(),5);
+        render.drawPoint(gr.getPtsZ(),5);
+        render.drawPoint(gr.getOrigin(),2);
+//        render.drawLine(ls.getSublinesX().get(0),100);
         popStyle();
 
         pushStyle();
         stroke(255,0,100);
-        render.drawPoint(gr.getOrigin(),10);
+        render.drawLine(ls.getSublinesY().get(0),100);
         popStyle();
     }
 
     public static void main(String[] args) {
         PApplet.main("cube.generator.Test_Lines");
     }
-
 
 }
