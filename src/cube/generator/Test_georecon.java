@@ -45,6 +45,11 @@ public class Test_georecon extends PApplet {
         render.drawPoint(pts_on_www);
 //        render.drawPolygonEdges(ga.getBaseXZ());
 //        render.drawEdges(ga.getShape());
+        double b =Math.sin(Math.PI*2*0.001*frameCount)*60;
+        if(Math.abs(b)>30)
+            b = 0;
+        ga = new GeoAdjust(gr.getOrigin(),gr.getThick(),gr.getX1()+b,gr.getX2()+b,gr.getX3(),gr.getZ1()+b,gr.getZ2()+b,gr.getZ3());
+
         pushStyle();
         noStroke();
         fill(255,100,0,100);

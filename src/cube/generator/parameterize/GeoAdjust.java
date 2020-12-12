@@ -48,8 +48,6 @@ public class GeoAdjust {
         WB_Point ip3 = new WB_Point(ip0.xf(),ip0.yf(),ip0.zf()+z2);
         WB_Polygon innerpoly = new WB_Polygon(ip0,ip1,ip2,ip3);
         baseXZ = new WB_Polygon(shellpoly.getPoints().toList(),innerpoly.getPoints().toList());
-        System.out.println(baseXZ);
-
     }
 
     public WB_Polygon getBaseXZ() {
